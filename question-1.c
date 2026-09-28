@@ -15,7 +15,8 @@ void display()
 
     if (fptr == NULL)
     {
-        printf("Failed to open read file");
+        printf("0 users found\n");
+        return;
     }
 
     char line[100];
@@ -73,7 +74,7 @@ void write()
 
     fprintf(fptr, "%d %s %d\n", u.id, u.name, u.age);
 
-    printf("User added successfully with id: %d", id - 1);
+    printf("User added successfully with id: %d\n", id - 1);
 
     fclose(fptr);
 }
@@ -86,6 +87,13 @@ void update()
     int id;
     printf("Enter user's id to update: ");
     scanf("%d", &id);
+
+    if(rptr==NULL){
+        printf("User not found\n");
+        fclose(temp_ptr);
+        remove("temp.txt");
+        return;
+    }
 
     char line[500];
 
@@ -111,9 +119,8 @@ void update()
             found = true;
             int i = 0;
             indx++;
-            while (line[indx] != ' ') curr_name[i++] = line[indx++];
+            while (line[indx+1] < '0' || line[indx+1] > '9') curr_name[i++] = line[indx++];
             curr_name[i]='\0';
-
             indx++;
 
             while (line[indx] >= '0' && line[indx] <= '9')
@@ -125,7 +132,7 @@ void update()
     {
 
         int action;
-        printf("Choose what to update:\nPress 1 to update name\nPress 2 to update age\nPress 3 to update both\n");
+        printf("Choose an option:\n1. update name\n2. update age\n3. update both\n=>");
         scanf("%d", &action);
 
         struct User u;
@@ -148,7 +155,7 @@ void update()
 
             fprintf(temp_ptr,"%d %s %d\n", u.id, u.name, u.age);
 
-            printf("Name updated successfully");
+            printf("Name updated successfully\n");
             break;
         }
 
@@ -156,7 +163,7 @@ void update()
         {
             int new_age;
 
-            printf("Enter new age:");
+            printf("Enter new age: ");
             scanf("%d", &new_age);
 
             u.id = id;
@@ -164,7 +171,7 @@ void update()
             u.age = new_age;
 
             fprintf(temp_ptr, "%d %s %d\n", u.id, u.name, u.age);
-            printf("Age updated successfully");
+            printf("Age updated successfully\n");
             break;
         }
 
@@ -185,7 +192,17 @@ void update()
             u.id = id;
             u.age = new_age;
             fprintf(temp_ptr, "%d %s %d\n", u.id, u.name, u.age);
-            printf("Name and age updated successfully");
+            printf("Name and age updated successfully\n");
+            break;
+        }
+
+        default:{
+            strcpy(u.name,curr_name);
+            u.age=curr_age;
+            u.id=id;
+
+            fprintf(temp_ptr, "%d %s %d\n", u.id, u.name, u.age);
+            printf("Failed to update user, press correct button\n");
             break;
         }
         }
@@ -193,7 +210,7 @@ void update()
 
     else
     {
-        printf("User not found");
+        printf("User not found\n");
     }
 
     fclose(rptr);
@@ -202,13 +219,12 @@ void update()
     rename("temp.txt", "users.txt");
 }
 
-void delete()
-{
+void delete(){
     FILE *rptr = fopen("users.txt", "r");
 
     if (rptr == NULL)
     {
-        printf("0 users found, Unable to delete");
+        printf("0 users found, Unable to delete\n");
         return;
     }
 
@@ -253,16 +269,57 @@ void delete()
     fclose(temp_file_ptr);
 
     remove("users.txt");
-    rename("temp.txt", "users.txt");
+    if(count == 0) remove("temp.txt");
+    else rename("temp.txt", "users.txt");
 
     if (found)
         printf("User deleted successfully\n");
     else
-        printf("Unable to find user");
+        printf("Unable to find user\n");
 }
-int main()
-{
-    update();
-    // write();
-    // delete();
+
+void printOptions(){
+    printf("Choose an operation:\n1. Create an user\n2. Display users\n3. Update an user\n4. Delete an user\n5. Exit\n=> ");
+}
+
+int main(){
+    while(true){
+
+        int option;
+        printOptions();
+        scanf("%d",&option);
+        getchar();
+
+        switch(option){
+            case 1:{
+                write();
+                break;
+            }
+            
+            case 2:{
+                display();
+                break;
+            }
+
+            case 3:{
+                update();
+                break;
+            }
+
+            case 4:{
+                delete();
+                break;
+            }
+            
+            case 5:{
+                printf("Exitted");
+                return 0;
+            }
+
+            default:{
+                printf("Please select correct option\n");
+                break;
+            }
+        }
+    }
 }
