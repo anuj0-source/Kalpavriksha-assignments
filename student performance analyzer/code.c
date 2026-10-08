@@ -78,6 +78,8 @@ int main(){
 
         int indx=0;
 
+        while(data[indx] == ' ') indx++;
+
         while(data[indx] != ' ') students[i].roll_no=students[i].roll_no * 10 + (data[indx++] - '0');
 
         while(data[indx] == ' ') indx++;
@@ -86,7 +88,7 @@ int main(){
 
         while(data[indx+1] < 48 || data[indx+1] > 57) students[i].name[name_indx++]=data[indx++];
         students[i].name[name_indx]='\0';
-        indx++;
+        while(data[indx] == ' ') indx++;
 
         students[i].sub1_marks=0;
         students[i].sub2_marks=0;
@@ -96,7 +98,7 @@ int main(){
         while(data[indx] == ' ') indx++;
         while(data[indx] != ' ') students[i].sub2_marks=students[i].sub2_marks * 10 + (data[indx++] - '0');
         while(data[indx] == ' ') indx++;
-        while(data[indx] != '\n' && data[indx] != '\0') students[i].sub3_marks=students[i].sub3_marks * 10 + (data[indx++] - '0');
+        while(data[indx] != ' ' && data[indx] != '\n' && data[indx] != '\0') students[i].sub3_marks=students[i].sub3_marks * 10 + (data[indx++] - '0');
 
     }
 
