@@ -119,6 +119,11 @@ int main(){
         }
     }
 
+    if(!err && topOperand != 0){
+        err=true;
+        strcpy(errorMsg,"Invalid expression");
+    }
+
 
     if(err){
         printf("%s",errorMsg);
