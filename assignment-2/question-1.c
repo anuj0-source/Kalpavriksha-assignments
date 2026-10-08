@@ -60,17 +60,12 @@ void write()
     fprintf(widptr, "%d", id);
     fclose(widptr);
 
-    char name[200];
     printf("Enter your name: ");
-    fgets(name, 200, stdin);
-    name[strcspn(name, "\n")] = '\0';
+    fgets(u.name, 100, stdin);
+    u.name[strcspn(u.name, "\n")] = '\0';
 
-    strcpy(u.name, name);
-
-    int age;
     printf("Enter your age: ");
-    scanf("%d", &age);
-    u.age = age;
+    scanf("%d", &u.age);
 
     fprintf(fptr, "%d %s %d\n", u.id, u.name, u.age);
 
@@ -142,13 +137,10 @@ void update()
 
         case 1:
         {
-            char new_name[200];
-            printf("Enter new name:");
+            printf("Enter new name: ");
             getchar();
-            fgets(new_name, 200, stdin);
-            new_name[strcspn(new_name, "\n")] = '\0';
-
-            strcpy(u.name, new_name);
+            fgets(u.name, 100, stdin);
+            u.name[strcspn(u.name, "\n")] = '\0';
 
             u.id = id;
             u.age = curr_age;
@@ -161,14 +153,12 @@ void update()
 
         case 2:
         {
-            int new_age;
 
             printf("Enter new age: ");
-            scanf("%d", &new_age);
+            scanf("%d", &u.age);
 
             u.id = id;
             strcpy(u.name, curr_name);
-            u.age = new_age;
 
             fprintf(temp_ptr, "%d %s %d\n", u.id, u.name, u.age);
             printf("Age updated successfully\n");
@@ -177,20 +167,16 @@ void update()
 
         case 3:
         {
-            int new_age;
-            char new_name[200];
             printf("Enter new name:");
             getchar();
-            fgets(new_name, 200, stdin);
+            fgets(u.name, 100, stdin);
 
-            new_name[strcspn(new_name, "\n")] = '\0';
-            strcpy(u.name, new_name);
+            u.name[strcspn(u.name, "\n")] = '\0';
 
             printf("Enter new age:");
-            scanf("%d", &new_age);
+            scanf("%d", &u.age);
 
             u.id = id;
-            u.age = new_age;
             fprintf(temp_ptr, "%d %s %d\n", u.id, u.name, u.age);
             printf("Name and age updated successfully\n");
             break;
