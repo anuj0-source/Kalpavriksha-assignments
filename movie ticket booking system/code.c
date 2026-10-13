@@ -13,19 +13,12 @@ double calculate_discount(int ticket_count,double sub_total){
     }
 }
 
-int get_category_price(char category[]){
-    if(strcmp(category,"Standard") == 0) return STANDARD;
-
-    else if(strcmp(category,"Premium") == 0) return PREMIUM;
-
-    else return RECLINER;
-}
-
 int main(){
     char name[100];
 
     int ticket_count,category_num;
     char category[100];
+    double category_price;
 
     printf("Enter your name: ");
     scanf("%99s",name);
@@ -43,19 +36,20 @@ int main(){
 
     switch(category_num){
         case 1: strcpy(category,"Standard");
+        category_price=STANDARD;
         break;
 
         case 2: strcpy(category,"Premium");
+        category_price=PREMIUM;
         break;
 
         case 3: strcpy(category,"Recliner");
+        category_price=RECLINER;
         break;
 
         default: printf("Error: please select correct category");
         return 1;
     }
-
-    double category_price=get_category_price(category);
 
     double sub_total=category_price * ticket_count;
 
