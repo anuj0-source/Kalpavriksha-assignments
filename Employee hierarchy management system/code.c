@@ -56,12 +56,26 @@ bool isReportingCycle(int currEmpId,Employee *reportingManager){
     return isReportingCycle(currEmpId,reportingManager->reporting_manager);
 }
 
+Employee *getCeo(Employee **employees){
+    for(int i=0; i < noOfEmployees; i++){
+        Employee currEmp=*employees[i];
+
+        if(strcmp(currEmp.designation,"CEO") == 0 ||
+            strcmp(currEmp.designation,"Ceo") == 0 ||
+            strcmp(currEmp.designation,"ceo") == 0
+        ) return employees[i];
+    }
+
+    return NULL;
+}
+
 int addEmployee(Employee ***employees){
     int id;
 
     retryId:
     printf("Enter id of employee: ");
     scanf("%d",&id);
+    getchar();
 
     if(exists(id,*employees)){
         printf("Id already exists please enter unique id\n");
@@ -75,15 +89,34 @@ int addEmployee(Employee ***employees){
     (*employees)[noOfEmployees]->id=id;
 
     printf("Enter name of the employee: ");
-    scanf("%s",(*employees)[noOfEmployees]->name);
-    getchar();
+    fgets((*employees)[noOfEmployees]->name,sizeof((*employees)[noOfEmployees]->name),stdin);
+    (*employees)[noOfEmployees]->name[strcspn((*employees)[noOfEmployees]->name, "\n")] = '\0';
 
     printf("Enter designation of the employee: ");
     fgets((*employees)[noOfEmployees]->designation,sizeof((*employees)[noOfEmployees]->designation),stdin);
     (*employees)[noOfEmployees]->designation[strcspn((*employees)[noOfEmployees]->designation, "\n")] = '\0';
 
-    if (strcmp((*employees)[noOfEmployees]->designation, "CEO") != 0)
+    if(strcmp((*employees)[noOfEmployees]->designation, "CEO") == 0 || strcmp((*employees)[noOfEmployees]->designation, "Ceo") == 0 || strcmp((*employees)[noOfEmployees]->designation, "ceo") == 0){
+        Employee *ceo=getCeo(*employees);
+        if(ceo != NULL){
+            printf("\nCEO already exists\n");
+            free((*employees)[noOfEmployees]);
+            (*employees)[noOfEmployees]=NULL;
+            *employees=realloc(*employees,noOfEmployees * sizeof(Employee *));
+            return 1;
+        }
+    }
+    if (strcmp((*employees)[noOfEmployees]->designation, "CEO") != 0 && strcmp((*employees)[noOfEmployees]->designation, "Ceo") != 0 && strcmp((*employees)[noOfEmployees]->designation, "ceo") != 0)
     {
+
+        if(noOfEmployees == 0){
+            printf("\nCEO doesn't exists, Add CEO first\n");
+            free((*employees)[noOfEmployees]);
+            (*employees)[noOfEmployees]=NULL;
+            *employees=realloc(*employees,noOfEmployees * sizeof(Employee *));
+            return 1;
+        }
+
         int managerId;
         retryReportingManager:
         printf("Enter ID of reporting manager: ");
@@ -175,7 +208,10 @@ int removeEmployee(Employee ***employees){
         return 1;
     }
 
-    if(strcmp(employeePtr->designation,"CEO") == 0){
+    if(strcmp(employeePtr->designation,"CEO") == 0 ||
+        strcmp(employeePtr->designation,"Ceo") == 0 ||
+        strcmp(employeePtr->designation,"ceo") == 0
+    ){
         printf("CEO can't be remove\n");
         return 1;
     }
@@ -233,16 +269,6 @@ void displayHierarchy(Employee *employee,int level,int *totalEmployees){
     for(int i=0; i < reportsCount; i++){
         displayHierarchy(employee->reports[i],level + 1,totalEmployees);
     }
-}
-
-Employee *getCeo(Employee **employees){
-    for(int i=0; i < noOfEmployees; i++){
-        Employee currEmp=*employees[i];
-
-        if(strcmp(currEmp.designation,"CEO") == 0) return employees[i];
-    }
-
-    return NULL;
 }
 
 void displayEmployeeHierarchy(Employee **employees){
