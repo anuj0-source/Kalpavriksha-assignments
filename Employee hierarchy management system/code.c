@@ -262,7 +262,7 @@ void displayEmployeeHierarchy(Employee **employees){
 
     displayHierarchy(employee,0,&empUnderCount);
 
-    printf("\nTotal Employees Under %d: %d",employee->id,empUnderCount);
+    printf("\nTotal Employees Under %d: %d",employee->id,empUnderCount-1);
 
 }
 
