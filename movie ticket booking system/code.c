@@ -5,6 +5,14 @@ const int STANDARD=150;
 const int PREMIUM=250;
 const int RECLINER=400;
 
+enum Category{
+    Standard=1,
+    Premium=2,
+    Recliner=3
+};
+
+typedef enum Category Category;
+
 double calculate_discount(int ticket_count,double sub_total){
     if(ticket_count < 5) return 0.0;
 
@@ -35,15 +43,15 @@ int main(){
     scanf("%d",&category_num);
 
     switch(category_num){
-        case 1: strcpy(category,"Standard");
+        case Standard: strcpy(category,"Standard");
         category_price=STANDARD;
         break;
 
-        case 2: strcpy(category,"Premium");
+        case Premium: strcpy(category,"Premium");
         category_price=PREMIUM;
         break;
 
-        case 3: strcpy(category,"Recliner");
+        case Recliner: strcpy(category,"Recliner");
         category_price=RECLINER;
         break;
 
