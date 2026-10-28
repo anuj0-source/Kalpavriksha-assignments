@@ -100,6 +100,10 @@ int main(){
         while(data[indx] == ' ') indx++;
         while(data[indx] != ' ' && data[indx] != '\n' && data[indx] != '\0') students[i].sub3_marks=students[i].sub3_marks * 10 + (data[indx++] - '0');
 
+        if(students[i].sub1_marks > 100 || students[i].sub2_marks > 100 || students[i].sub3_marks > 100){
+            printf("\nMarks can't be more than 100, please try again.");
+            return 1;
+        }
     }
 
     printf("\n");
@@ -116,7 +120,11 @@ int main(){
         printf("Average: %.2f\n",avg_marks);
         printf("Grade: %c\n",grade);
 
-        if (grade == 'F') continue;
+        if (grade == 'F'){
+            printf("\n");
+            continue;
+        }
+        
         print_performance(grade);
 
     }
