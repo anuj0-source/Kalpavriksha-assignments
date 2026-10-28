@@ -100,8 +100,8 @@ int main(){
         while(data[indx] == ' ') indx++;
         while(data[indx] != ' ' && data[indx] != '\n' && data[indx] != '\0') students[i].sub3_marks=students[i].sub3_marks * 10 + (data[indx++] - '0');
 
-        if(students[i].sub1_marks > 100 || students[i].sub2_marks > 100 || students[i].sub3_marks > 100){
-            printf("\nMarks can't be more than 100, please try again.");
+        if(students[i].sub1_marks > 100 || students[i].sub1_marks < 0 || students[i].sub2_marks > 100 || students[i].sub2_marks < 0 || students[i].sub3_marks > 100 || students[i].sub3_marks < 0){
+            printf("\nMarks can only be in range 0-100, please try again.");
             return 1;
         }
     }
@@ -124,7 +124,7 @@ int main(){
             printf("\n");
             continue;
         }
-        
+
         print_performance(grade);
 
     }
