@@ -1,3 +1,4 @@
+
 #include<stdio.h>
 
 typedef struct Student{
@@ -62,46 +63,43 @@ int main(){
     int n;
 
     printf("Enter number of students: ");
-    scanf("%d",&n);
+
+    if(scanf("%d",&n) != 1 || n < 1 || n > 100){
+        printf("Please enter a valid number of students 1-100.\n");
+        return 1;
+    }
+
     getchar();
+
     printf("\n");
     printf("Enter these details using spaces as separators:\n");
     printf("Roll Number | Name | Marks 1 | Marks 2 | Marks 3\n");
     printf("\n");
 
-    char data[1000];
-
     for(int i=0; i < n; i++){
-        fgets(data,1000,stdin);
 
-        students[i].roll_no=0;
+        int count = scanf("%d %199s %d %d %d",
+            &students[i].roll_no,
+            students[i].name,
+            &students[i].sub1_marks,
+            &students[i].sub2_marks,
+            &students[i].sub3_marks);
 
-        int indx=0;
+        if(count != 5){
+            printf("\nInvalid or incomplete student details. Please enter all 5 details.\n");
+            return 1;
+        }
 
-        while(data[indx] == ' ') indx++;
+        if(students[i].roll_no <= 0){
+            printf("Please enter a valid roll number.\n");
+            return 1;
+        }
 
-        while(data[indx] != ' ') students[i].roll_no=students[i].roll_no * 10 + (data[indx++] - '0');
+        if(students[i].sub1_marks > 100 || students[i].sub1_marks < 0 ||
+           students[i].sub2_marks > 100 || students[i].sub2_marks < 0 ||
+           students[i].sub3_marks > 100 || students[i].sub3_marks < 0){
 
-        while(data[indx] == ' ') indx++;
-
-        int name_indx=0;
-
-        while(data[indx+1] < 48 || data[indx+1] > 57) students[i].name[name_indx++]=data[indx++];
-        students[i].name[name_indx]='\0';
-        while(data[indx] == ' ') indx++;
-
-        students[i].sub1_marks=0;
-        students[i].sub2_marks=0;
-        students[i].sub3_marks=0;
-
-        while(data[indx] != ' ') students[i].sub1_marks=students[i].sub1_marks * 10 + (data[indx++] - '0');
-        while(data[indx] == ' ') indx++;
-        while(data[indx] != ' ') students[i].sub2_marks=students[i].sub2_marks * 10 + (data[indx++] - '0');
-        while(data[indx] == ' ') indx++;
-        while(data[indx] != ' ' && data[indx] != '\n' && data[indx] != '\0') students[i].sub3_marks=students[i].sub3_marks * 10 + (data[indx++] - '0');
-
-        if(students[i].sub1_marks > 100 || students[i].sub1_marks < 0 || students[i].sub2_marks > 100 || students[i].sub2_marks < 0 || students[i].sub3_marks > 100 || students[i].sub3_marks < 0){
-            printf("\nMarks can only be in range 0-100, please try again.");
+            printf("\nMarks can only be in range 0-100, please try again.\n");
             return 1;
         }
     }
@@ -109,10 +107,18 @@ int main(){
     printf("\n");
 
     for(int i=0; i < n; i++){
-        int total_marks=get_total_marks(students[i].sub1_marks,students[i].sub2_marks,students[i].sub3_marks);
-        float avg_marks=get_avg_marks(students[i].sub1_marks,students[i].sub2_marks,students[i].sub3_marks);
 
-        char grade=assign_grade(avg_marks);
+        int total_marks = get_total_marks(
+            students[i].sub1_marks,
+            students[i].sub2_marks,
+            students[i].sub3_marks);
+
+        float avg_marks = get_avg_marks(
+            students[i].sub1_marks,
+            students[i].sub2_marks,
+            students[i].sub3_marks);
+
+        char grade = assign_grade(avg_marks);
 
         printf("Roll: %d\n",students[i].roll_no);
         printf("Name: %s\n",students[i].name);
@@ -120,18 +126,15 @@ int main(){
         printf("Average: %.2f\n",avg_marks);
         printf("Grade: %c\n",grade);
 
-        if (grade == 'F'){
+        if(grade == 'F'){
             printf("\n");
             continue;
         }
 
         print_performance(grade);
-
     }
 
-    
     print_roll_numbers(students,n-1);
 
     return 0;
-
 }
