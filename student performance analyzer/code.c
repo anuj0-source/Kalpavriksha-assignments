@@ -72,11 +72,11 @@ int main(){
     getchar();
 
     printf("\n");
-    printf("Enter these details using spaces as separators:\n");
-    printf("Roll Number | Name | Marks 1 | Marks 2 | Marks 3\n");
-    printf("\n");
 
     for(int i=0; i < n; i++){
+
+        printf("\nEnter these details using spaces as separators for student %d:\n",i+1);
+        printf("Roll Number | Name | Marks 1 | Marks 2 | Marks 3\n");
 
         int count = scanf("%d %199s %d %d %d",
             &students[i].roll_no,
