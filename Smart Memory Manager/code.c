@@ -468,7 +468,7 @@ void memoryStatistics(Block *blocks,int pool_size){
     printf("Free blocks: %d\n",freeBlocks);
     printf("Largest free block: %d bytes\n",maxFreeSize);
 
-    if(failedAllocation == 1 && failedAllocationSize <= pool_size - allocatedCount && maxFreeSize < failedAllocation){
+    if(failedAllocation == 1 && failedAllocationSize <= pool_size - allocatedCount && maxFreeSize < failedAllocationSize){
         printf("Note: The request for %d bytes failed even though %d bytes are free, because the free memory is fragmented.",failedAllocationSize,pool_size - allocatedCount);
     }
 
