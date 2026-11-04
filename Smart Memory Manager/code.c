@@ -465,6 +465,7 @@ void memoryStatistics(Block *blocks,int pool_size){
 
     printf("Allocated: %d bytes\n",allocatedCount);
     printf("Free: %d bytes\n",pool_size - allocatedCount);
+    printf("Allocated blocks: %d\n",blocksCount - freeBlocks);
     printf("Free blocks: %d\n",freeBlocks);
     printf("Largest free block: %d bytes\n",maxFreeSize);
 
