@@ -408,9 +408,10 @@ void create(char input[],int i,FileNode *cwd){
 void presentWorkingDirectory(FileNode *cwd){
     if(cwd->parent == NULL) return;
 
+    presentWorkingDirectory(cwd->parent);
+
     printf("/%s",cwd->name);
 
-    presentWorkingDirectory(cwd->parent);
 }
 
 void df(DiskManager *diskManager){
