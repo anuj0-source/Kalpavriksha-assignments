@@ -161,7 +161,14 @@ int write(char input[],int indx,FileNode *cwd,DiskManager *diskManager){
 
         int size=end - indx - 1;
 
+        if(size == 0) size++;
+
         int blocksReq=(int) ceil((double) size / (BLOCK_SIZE - 1));
+
+        if(blocksReq > diskManager->free_blocks){
+            printf("Not enough free blocks.\n");
+            return 0;
+        }
 
         if(filePtr->blocksOccupied){
             for (int i = 0; i < filePtr->blocksOccupied; i++)
@@ -183,11 +190,6 @@ int write(char input[],int indx,FileNode *cwd,DiskManager *diskManager){
             }
         }
 
-        if(blocksReq > diskManager->free_blocks){
-            printf("Not enough free blocks.\n");
-            return 0;
-        }
-
         unsigned char **tempPtr=realloc(filePtr->blockPointers,blocksReq * sizeof(unsigned char *));
 
         if(tempPtr == NULL){
@@ -200,14 +202,14 @@ int write(char input[],int indx,FileNode *cwd,DiskManager *diskManager){
         for(int i=0; i < blocksReq; i++){
             FreeBlock *freePtr=diskManager->head;
             *(filePtr->blockPointers + i)=freePtr->index;
-            freePtr->next->prev=NULL;
+            if(freePtr->next) freePtr->next->prev=NULL;
             diskManager->head=freePtr->next;
             free(freePtr);
             diskManager->free_blocks--;
 
             int j=0;
 
-            while(input[indx] != '"' && j < BLOCK_SIZE){
+            while(input[indx] != '"' && j < BLOCK_SIZE - 1){
                 *(*(filePtr->blockPointers + i) + j)=input[indx++];
                 j++;
             }
@@ -265,17 +267,17 @@ void read(char input[],int indx,FileNode *cwd){
 }
 
 void mkdir(char input[],int i,FileNode *cwd){
-    char dirName[52] = {'\0'};
+    char dirName[51] = {'\0'};
     int j = 0;
 
-    while (input[i] != '\0' && input[i] != ' ')
+    while (input[i] != '\0' && input[i] != ' ' && j < 50)
     {
         dirName[j++] = input[i++];
     }
 
-    if (j > 51)
+    if (j >= 50 && input[i] != '\0' && input[i] != ' ')
     {
-        printf("Directories name should be less than or equal to 51 characters.\n");
+        printf("Directories name should be less than or equal to 50 characters.\n");
         return;
     }
 
@@ -318,15 +320,20 @@ void changeDirectory(char input[],int i,FileNode **cwd){
     char postCommand[51] = {'\0'};
     int j = 0;
 
-    while (input[i] != '\0' && input[i] != ' ')
+    while (input[i] != '\0' && input[i] != ' ' && j < 50)
     {
         postCommand[j++] = input[i++];
     }
 
-    while (input[i] == ' ' && input[i] != '\0')
-        i++;
+    if (j >= 50 && input[i] != '\0' && input[i] != ' ')
+    {
+        printf("Directories name should be less than or equal to 50 characters.\n");
+        return;
+    }
 
-    if (input[i] != '\0' || j >= 50)
+    while (input[i] == ' ' && input[i] != '\0') i++;
+
+    if (input[i] != '\0')
     {
         printf("Please enter a valid directory name.\n");
         return;
@@ -580,6 +587,12 @@ void freeAllBlocks(DiskManager *diskManager){
     }
 }
 
+FileNode *findRoot(FileNode *cwd){
+    while(cwd->parent) cwd=cwd->parent;
+
+    return cwd;
+}
+
 int main(){
     unsigned char **disk=malloc(NUM_BLOCKS * sizeof(unsigned char *));
     DiskManager diskManager=InitializeDiskManager();
@@ -729,7 +742,9 @@ int main(){
                 continue;
             }
 
-            freeAllFiles(cwd);
+            FileNode *root=findRoot(cwd);
+
+            freeAllFiles(root);
             freeAllBlocks(&diskManager);
             free(disk);
 
