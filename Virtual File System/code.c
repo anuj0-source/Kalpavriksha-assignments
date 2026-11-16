@@ -352,7 +352,7 @@ void changeDirectory(char input[],int i,FileNode **cwd){
     }
 
     if((*cwd)->parent) printf("Moved to /%s\n", (*cwd)->name);
-    else printf("Moved to %s.\n", (*cwd)->name);
+    else printf("Moved to %s\n", (*cwd)->name);
 }
 
 void create(char input[],int i,FileNode *cwd){
