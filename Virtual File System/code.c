@@ -292,6 +292,11 @@ void mkdir(char input[],int i,FileNode *cwd){
         return;
     }
 
+    if(strcmp(dirName,"..") == 0){
+        printf("The directory name '..' is reserved and cannot be used.\n");
+        return;
+    }
+
     FileNode *childPtr = cwd->childHead;
 
     if (findDir(dirName, childPtr))
@@ -635,7 +640,7 @@ int main(){
 
         while(input[i] == ' ' && input[i] != '\0') i++;
 
-        while(input[i] != ' ' && input[i] != '\0'){
+        while(input[i] != ' ' && input[i] != '\0' && j < 99){
             command[j++]=input[i++];
         }
         while(input[i] == ' ' && input[i] != '\0') i++;
