@@ -105,7 +105,8 @@ void listDir(FileNode *cwd){
     FileNode *temp=cwd->childHead;
 
     do{
-        printf("%s\n",temp->name);
+        if(temp->isDir) printf("%s/\n",temp->name);
+        else printf("%s\n",temp->name);
         temp=temp->next;
     }while(temp != cwd->childHead);
 }
@@ -204,6 +205,7 @@ int write(char input[],int indx,FileNode *cwd,DiskManager *diskManager){
             *(filePtr->blockPointers + i)=freePtr->index;
             if(freePtr->next) freePtr->next->prev=NULL;
             diskManager->head=freePtr->next;
+            if(diskManager->head == NULL) diskManager->tail=NULL;
             free(freePtr);
             diskManager->free_blocks--;
 
@@ -366,12 +368,12 @@ void create(char input[],int i,FileNode *cwd){
     char fileName[51] = {'\0'};
     int j = 0;
 
-    while (input[i] != '\0' && input[i] != ' ')
+    while (input[i] != '\0' && input[i] != ' ' && j < 50)
     {
         fileName[j++] = input[i++];
     }
 
-    if (j >= 50)
+    if (j >= 50 && input[i] != '\0' && input[i] != ' ')
     {
         printf("Files name should be less than or equal to 50 characters.\n");
         return;
@@ -565,7 +567,13 @@ void freeAllFiles(FileNode *cwd){
 
     do{
         if(temp->isDir) freeAllFiles(temp);
-        else free(temp->blockPointers);
+        else{
+            for(int i=0; i < temp->blocksOccupied; i++){
+                free(*(temp->blockPointers + i));
+            }
+
+            free(temp->blockPointers);
+        }
 
         FileNode *removing=temp;
         temp=temp->next;
@@ -618,7 +626,7 @@ int main(){
     while(1){
         char input[6000]={'\0'};
         printf("%s > ",cwd->name);
-        fgets(input,1999,stdin);
+        fgets(input,sizeof(input),stdin);
         input[strcspn(input,"\n")]='\0';
 
         char command[100]={'\0'};
@@ -746,6 +754,7 @@ int main(){
 
             freeAllFiles(root);
             freeAllBlocks(&diskManager);
+            free(root);
             free(disk);
 
             printf("Memory released. Exiting program...\n");
